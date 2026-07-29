@@ -1,5 +1,5 @@
-# Local dev stack. `docker compose up -d` gives you Postgres + a DB web UI.
-# The `app` service is added during Phase 0 once Next.js is scaffolded (see PROGRESS.md).
+# Local dev stack: `docker compose up` runs the Next.js app + Postgres + a DB web UI.
+# Or run only the DB (`docker compose up -d db`) and the app locally with `npm run dev`.
 services:
   db:
     image: postgres:16-alpine
@@ -29,16 +29,21 @@ services:
       db:
         condition: service_healthy
 
-  # app:  # enabled in Phase 0 (needs Dockerfile + package.json)
-  #   build: .
-  #   env_file: .env
-  #   ports: ["3000:3000"]
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   volumes:
-  #     - .:/app
-  #     - /app/node_modules
+  app:
+    build: .
+    container_name: support-tech-app
+    env_file: .env
+    environment:
+      # Inside the compose network the DB host is `db`, not localhost.
+      DATABASE_URL: "postgresql://support:support@db:5432/support_tech?schema=public"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
 
 volumes:
   db_data:
