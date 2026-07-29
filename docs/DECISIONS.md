@@ -6,6 +6,30 @@ Link from PROGRESS.md items with `(DECISIONS.md #N)`.
 
 ---
 
+## #11 - Invoices: admin-issued now, Stripe later (Phase 3 pulled forward)
+**Decision:** Added an `Invoice` model (unique `number` "INV-00001", seeker FK, optional `requestId`, `amountCents` Int, `currency`, `status` pending/paid/void, issued/due/paid dates). Admin issues invoices and marks them paid; seekers view their own at `/seekers/dashboard/payments`. No real payment processing yet - "online payment coming soon"; admin confirms receipt. Pure rules in `invoices-core.ts` (money in cents, `dollarsToCents`, `formatInvoiceNumber`, `validateInvoiceDraft`, `canMarkPaid`; 10 tests). Numbering is sequential inside a transaction (count+1); single admin so contention is negligible.
+**Why:** User asked for the payments/invoice listing now. Building the invoice ledger first (admin-issued, viewable, statuses) is the honest slice; Stripe checkout/webhooks bolt on later and update `status`/`paidAt`. Money stored as integer cents to avoid float rounding.
+**Security:** seekers read only their own invoices (scoped by seekerId, IDOR-safe); only admins create/mark-paid (role-checked in the actions); invoices can only target seekers.
+**Rules out (for now):** real card payment; subscriptions/plans; per-invoice line items.
+
+---
+
+## #10 - Cap: 3 active requests per seeker, enforced server-side
+**Decision:** A seeker may hold at most `MAX_ACTIVE_REQUESTS = 3` *active* requests, where active = status `requested` or `matched`. Closed/cancelled requests free a slot. The rule is a pure helper (`isAtRequestLimit`, tested) enforced authoritatively in `createSessionRequest` inside a **Serializable** transaction (count + insert atomic) to stop a TOCTOU race from two concurrent submits. `seekerId` always comes from the session, never client input. UI (request page gate + `RequestButton`) is convenience only; a P2034 write-conflict returns a friendly retry error.
+**Why:** Keeps the admin-assisted matching queue manageable and prevents spam/abuse. Server-side + atomic because UI limits are trivially bypassable and count-then-insert without isolation races.
+**Rules out (for now):** per-plan limits; counting confirmed Bookings toward the cap (no seeker-created bookings yet - revisit when admin-confirm lands).
+
+---
+
+## #9 - Seeker requests use a `SessionRequest` (one request, many preferred times)
+**Decision:** The seeker-facing "request a session" now creates a `SessionRequest` (id, skillName + optional catalog `skillId`, `commitmentMonths` 1/3/5, startDate, precomputed endDate, timezone, note, status) with child `SessionRequestTime` rows (the preferred times). A future subscription/payment model will link to this request by id.
+Skill is a type-ahead over the catalog **plus free text**: a case-insensitive catalog hit keeps the canonical name+id ("aws" -> "AWS"); otherwise it is stored as title-cased free text with no id (pure rules + tests in `lib/services/requests-core.ts`).
+The `Booking` model (DECISIONS #8) is retained for the *confirmed* session an admin creates from a request (assign slice) - it is no longer what the seeker creates directly.
+**Why:** Matches the product: a seeker asks for help across a commitment window and offers several times; the admin matches. Keeping commitment as a stored field (no billing) respects one-phase-at-a-time - Stripe/subscriptions stay Phase 3 and will FK to the request.
+**Rules out (for now):** multiple skills per request; billing on submit; auto-creating catalog skills from free text.
+
+---
+
 ## #8 - Booking model: `requested` status, optional provider, 60-min slots, server-local time
 **Decision:** `Booking` starts in a new `requested` status with `providerId` nullable; an admin later assigns a provider and confirms -> `scheduled` (then completed/no_show/cancelled).
 Sessions default to `durationMin = 60`.

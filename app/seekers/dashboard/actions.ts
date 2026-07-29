@@ -19,6 +19,18 @@ export async function saveSeekerProfileAction(
     headline: String(formData.get("headline") ?? ""),
     bio: String(formData.get("bio") ?? ""),
     location: String(formData.get("location") ?? ""),
+    avatarUrl: String(formData.get("avatarUrl") ?? ""),
+    company: String(formData.get("company") ?? ""),
+    position: String(formData.get("position") ?? ""),
+    linkedin: String(formData.get("linkedin") ?? ""),
+    github: String(formData.get("github") ?? ""),
+    website: String(formData.get("website") ?? ""),
+    skills: formData.getAll("skills").map((v) => String(v)).filter(Boolean),
+    street: String(formData.get("street") ?? ""),
+    city: String(formData.get("city") ?? ""),
+    state: String(formData.get("state") ?? ""),
+    zip: String(formData.get("zip") ?? ""),
+    country: String(formData.get("country") ?? ""),
   });
 
   return { ok: true };

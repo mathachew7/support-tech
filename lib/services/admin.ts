@@ -19,6 +19,15 @@ export function listUsers() {
   });
 }
 
+/** Seekers only (for the invoice recipient dropdown). */
+export function listSeekers() {
+  return prisma.user.findMany({
+    where: { role: "seeker" },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, email: true },
+  });
+}
+
 export type ApproveOutcome = { ok: true } | { ok: false; error: string };
 
 /** Approve a pending provider. Rejects anything the transition rule disallows. */

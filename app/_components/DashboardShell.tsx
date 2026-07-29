@@ -5,55 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Role } from "@/lib/auth/access";
 import { signOutAction } from "@/app/auth-actions";
+import { navFor } from "./dashboard-nav";
 import styles from "./dashboard.module.css";
-
-type NavItem = { href: string; label: string; icon: React.ReactNode };
-
-// ---- Icons (inline, so the shell has no asset deps) ----
-const I = {
-  grid: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /></svg>
-  ),
-  calendar: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18M12 14v4M10 16h4" /></svg>
-  ),
-  user: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" /></svg>
-  ),
-  users: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 21v-1A5.5 5.5 0 0 1 8 14.5h2A5.5 5.5 0 0 1 15.5 20v1" /><path d="M16 3.5a3.5 3.5 0 0 1 0 7M18 14.5a5.5 5.5 0 0 1 3.5 5.1V21" /></svg>
-  ),
-  logout: (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
-  ),
-  home: (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5 12 3l9 7.5M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" /></svg>
-  ),
-};
-
-function navFor(role: Role): NavItem[] {
-  switch (role) {
-    case "seeker":
-      return [
-        { href: "/seekers/dashboard", label: "Dashboard", icon: I.grid },
-        { href: "/seekers/dashboard/request", label: "Request a session", icon: I.calendar },
-      ];
-    case "provider":
-      return [
-        { href: "/providers/dashboard", label: "Dashboard", icon: I.grid },
-        { href: "/providers/dashboard", label: "My profile", icon: I.user },
-      ].filter((v, i, a) => a.findIndex((x) => x.href === v.href) === i);
-    case "admin":
-      return [{ href: "/admin", label: "Users", icon: I.users }];
-    default:
-      return [];
-  }
-}
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
 }
+
+const logoutIcon = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+);
 
 export default function DashboardShell({
   user,
@@ -69,7 +31,7 @@ export default function DashboardShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const nav = navFor(user.role);
+  const sections = navFor(user.role);
   const closeAll = () => {
     setSidebarOpen(false);
     setMenuOpen(false);
@@ -89,9 +51,7 @@ export default function DashboardShell({
 
   const isActive = (href: string) =>
     pathname === href ||
-    (href !== "/admin" && href !== "/seekers/dashboard" && href !== "/providers/dashboard"
-      ? pathname.startsWith(href + "/")
-      : false);
+    (href.split("/").length > 3 ? pathname.startsWith(href + "/") : false);
 
   return (
     <div className={styles.shell}>
@@ -100,28 +60,37 @@ export default function DashboardShell({
           <span className={styles.mark}>J</span>
           JoslaLink
         </Link>
+
         <nav className={styles.nav}>
-          <div className={styles.navSection}>Menu</div>
-          {nav.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={closeAll}
-              className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ""}`}
-            >
-              <span className={styles.navIcon}>{item.icon}</span>
-              {item.label}
-            </Link>
+          {sections.map((section) => (
+            <div key={section.title}>
+              <div className={styles.navSection}>{section.title}</div>
+              {section.items.map((item) =>
+                item.soon ? (
+                  <span key={item.label} className={`${styles.navItem} ${styles.navItemSoon}`}>
+                    <span className={styles.navIcon}>{item.icon}</span>
+                    {item.label}
+                    <span className={styles.soonTag}>Soon</span>
+                  </span>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={closeAll}
+                    className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ""}`}
+                  >
+                    <span className={styles.navIcon}>{item.icon}</span>
+                    {item.label}
+                  </Link>
+                ),
+              )}
+            </div>
           ))}
-          <div className={styles.navSection}>General</div>
-          <Link href="/" onClick={closeAll} className={styles.navItem}>
-            <span className={styles.navIcon}>{I.home}</span>
-            Back to site
-          </Link>
         </nav>
-        <div className={styles.sidebarFoot}>
-          Signed in as <strong style={{ color: "rgba(255,255,255,0.7)" }}>{user.role}</strong>
-        </div>
+
+        <a href="mailto:support@joslalink.com" className={styles.sidebarFoot}>
+          Need help? Contact support
+        </a>
       </aside>
 
       {/* Mobile backdrop */}
@@ -166,17 +135,13 @@ export default function DashboardShell({
                     <div className={styles.menuName}>{user.name}</div>
                     <div className={styles.menuEmail}>{user.email}</div>
                   </div>
-                  <Link href="/" onClick={closeAll} className={styles.menuItem} role="menuitem">
-                    <span className={styles.navIcon}>{I.home}</span>
-                    Back to site
-                  </Link>
                   <form action={signOutAction}>
                     <button
                       type="submit"
                       className={`${styles.menuItem} ${styles.menuItemDanger}`}
                       role="menuitem"
                     >
-                      <span className={styles.navIcon}>{I.logout}</span>
+                      <span className={styles.navIcon}>{logoutIcon}</span>
                       Sign out
                     </button>
                   </form>

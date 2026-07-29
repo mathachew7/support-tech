@@ -1,0 +1,91 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.full {
+  grid-column: 1 / -1;
+}
+
+/* Avatar uploader */
+.uploader {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+.avatarPick {
+  position: relative;
+  flex: none;
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid var(--border);
+  background: linear-gradient(140deg, var(--accent), #ff8a63);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.avatarPick:hover,
+.avatarPick:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+.avatarPick img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  background: rgba(27, 42, 74, 0.55);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.avatarPick:hover .avatarOverlay,
+.avatarPick:focus-visible .avatarOverlay {
+  opacity: 1;
+}
+.removePhoto {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.4rem;
+}
+.removePhoto:hover {
+  text-decoration: underline;
+}
+.uploaderHint {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.editActions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

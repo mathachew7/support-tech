@@ -1,16 +1,12 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
-import { requestSession } from "@/lib/services/bookings";
-import type { Suggestion } from "@/lib/services/matching";
+import { createSessionRequest } from "@/lib/services/requests";
 
-export type RequestState = {
-  ok?: boolean;
-  error?: string;
-  suggestions?: Suggestion[];
-};
+export type RequestState = { error?: string };
 
-export async function requestSessionAction(
+export async function createRequestAction(
   _prev: RequestState,
   formData: FormData,
 ): Promise<RequestState> {
@@ -20,13 +16,30 @@ export async function requestSessionAction(
     return { error: "Not authorized" };
   }
 
-  const skillId = String(formData.get("skillId") ?? "");
-  const datetimeStr = String(formData.get("datetime") ?? "");
+  const skillsRaw = formData.getAll("skills").map((v) => String(v)).filter(Boolean);
+  const commitmentMonths = Number(formData.get("commitmentMonths") ?? 0);
+  const startDateStr = String(formData.get("startDate") ?? "");
+  const startDate = new Date(startDateStr + "T00:00:00");
+  const timezone = String(formData.get("timezone") ?? "");
   const note = String(formData.get("note") ?? "");
-  const datetime = new Date(datetimeStr);
+  // Preferred times are times-of-day ("HH:MM"); anchor them to the start date
+  // for now (schema for recurring day/time refined in the next step).
+  const times = formData
+    .getAll("times")
+    .map((v) => String(v))
+    .filter(Boolean)
+    .map((hhmm) => new Date(`${startDateStr}T${hhmm}:00`));
 
-  const result = await requestSession(userId, { skillId, datetime, note });
+  const result = await createSessionRequest(userId, {
+    skillsRaw,
+    commitmentMonths,
+    startDate,
+    timezone,
+    note,
+    times,
+  });
   if (!result.ok) return { error: result.error };
 
-  return { ok: true, suggestions: result.suggestions };
+  // Success -> show it in the seeker's sessions list.
+  redirect("/seekers/dashboard/sessions?requested=1");
 }

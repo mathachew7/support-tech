@@ -89,6 +89,25 @@
   background: var(--accent);
   color: #fff;
 }
+.navItemSoon {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+}
+.navItemSoon:hover {
+  background: none;
+  color: rgba(255, 255, 255, 0.4);
+}
+.soonTag {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.55);
+}
 .navIcon {
   flex: none;
   display: grid;
@@ -97,10 +116,18 @@
   height: 20px;
 }
 .sidebarFoot {
+  display: block;
   padding: 1rem 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.sidebarFoot:hover {
+  color: #fff;
+  text-decoration: none;
 }
 
 /* ---------------- Main column ---------------- */
@@ -258,6 +285,22 @@
   padding: 1.75rem;
   max-width: 1200px;
   width: 100%;
+}
+
+/* Print: drop the app chrome so a printed/PDF'd page shows only the content. */
+@media print {
+  .sidebar,
+  .header,
+  .backdrop {
+    display: none !important;
+  }
+  .main {
+    margin-left: 0 !important;
+  }
+  .content {
+    padding: 0 !important;
+    max-width: none !important;
+  }
 }
 
 /* Mobile backdrop */

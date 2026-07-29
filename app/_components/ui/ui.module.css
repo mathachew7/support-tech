@@ -1,0 +1,263 @@
+/* Shared styles for the custom form controls (combobox, date, time, select). */
+.control {
+  position: relative;
+  width: 100%;
+}
+
+/* A button that looks like an input (for select/date triggers) */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  color: var(--foreground);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.trigger:hover {
+  border-color: var(--muted);
+}
+.triggerOpen,
+.trigger:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.triggerPlaceholder {
+  color: var(--muted);
+}
+.triggerValue {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.caret {
+  flex: none;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+}
+
+/* Popover shared */
+.popover {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lift);
+  padding: 0.4rem;
+  animation: pop 0.12s ease;
+}
+@keyframes pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tags input (multi-select combobox) */
+.tagsInput {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 0.35rem 0.5rem;
+  cursor: text;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.tagsInput:hover {
+  border-color: var(--muted);
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.2rem 0.35rem 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+.tagX {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.tagX:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.tagField {
+  flex: 1;
+  min-width: 120px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0.25rem !important;
+  font: inherit;
+  background: none;
+  color: var(--foreground);
+}
+
+/* Option list */
+.list {
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  color: var(--foreground);
+}
+.option:hover,
+.optionActive {
+  background: var(--accent-weak);
+}
+.optionSub {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.empty {
+  padding: 0.7rem 0.65rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.addCustom {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Search box inside a popover */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.55rem;
+  margin-bottom: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.search input {
+  border: none;
+  outline: none;
+  padding: 0;
+  font: inherit;
+  width: 100%;
+  background: none;
+  color: var(--foreground);
+}
+.searchIcon {
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+}
+
+/* Calendar */
+.cal {
+  width: 280px;
+  max-width: 100%;
+}
+.calHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.35rem 0.6rem;
+}
+.calTitle {
+  font-weight: 700;
+  color: var(--foreground);
+}
+.calNav {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  cursor: pointer;
+}
+.calNav:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.calDow {
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 0.3rem 0;
+}
+.calDay {
+  aspect-ratio: 1;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.calDay:hover:not(:disabled) {
+  background: var(--accent-weak);
+}
+.calDayToday {
+  font-weight: 800;
+  color: var(--accent);
+}
+.calDaySelected,
+.calDaySelected:hover {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+.calDay:disabled {
+  color: var(--border);
+  cursor: default;
+}
+.calEmpty {
+  aspect-ratio: 1;
+}
