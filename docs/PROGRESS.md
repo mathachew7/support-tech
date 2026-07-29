@@ -7,7 +7,7 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ---
 
 ## Current phase
-> **Phase 1 - Foundation (Profiles & Skills)** (not started)
+> **Phase 2 - Booking & Scheduling** (not started)
 
 ## Legend
 `[ ]` todo  `[~]` in progress  `[x]` done  `[!]` blocked/needs decision
@@ -41,11 +41,13 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 - Verified: `npm test` green, `npm run build` typechecks/compiles, DB migration applied.
 - Not yet run this turn: the `app` service inside Docker (`docker compose up`) - app verified locally via `next build`; container build is configured and ready.
 
-### Phase 1 - Foundation (Profiles & Skills)  `[ ]`
-- [ ] Models: User, Skill, ProviderSkill, Availability
-- [ ] Seeker signup/profile
-- [ ] Provider signup/profile (skills + proficiency, weekly availability)
-- [ ] Admin dashboard: list users, approve provider (pending -> approved)
+### Phase 1 - Foundation (Profiles & Skills)  `[x]` DONE
+- [x] Models: User, Skill, ProviderSkill, Availability (migration `phase1_profiles_skills` applied; skill catalog seeded, 17 skills)
+- [x] Seeker signup/profile (signup form + editable profile in seeker dashboard)
+- [x] Provider signup/profile (skills + proficiency + weekly availability editor; pending-approval banner)
+- [x] Admin dashboard: list users w/ role+status, approve provider (pending -> approved)
+- Verified: `npm test` green (28), `npm run lint` clean, `npm run build` typechecks/compiles (17 routes), DB service layer smoke-tested end-to-end (register->pending, profile save, overlap rejected, approve->approved, double-approve rejected).
+- Rules under test (pure, /lib/services): `initialStatusFor` (provider->pending), `approveProviderTransition`, weekly availability validation (range/order/overlap).
 
 ### Phase 2 - Booking & Scheduling  `[ ]`
 - [ ] Model: Booking
@@ -74,5 +76,6 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ---
 
 ## Session log (newest first)
+- 2026-07-29: **Phase 1 complete.** Profiles & skills built TDD. Pure rules in /lib/services (users, availability) + thin DB wrappers (providers, admin, seekers, signup). UI: signup/login/dashboard-router/forbidden, seeker + provider profile editors, admin user-list w/ approve. Skill catalog seeded via `tsx prisma/seed.ts`. Session now carries user id. Small design system in globals.css. Decisions #4-#7 logged. Next: Phase 2 - Booking model + session requests + admin assign + status lifecycle + Resend confirmation.
 - 2026-07-29: **Phase 0 complete.** Next.js 16 + Prisma + Auth.js scaffolded; role guard tested (TDD, 6 green); DB migration applied in Docker; build clean. Decided auth=Auth.js (#1), design=Frontend Design/Anthropic (#2), credentials+JWT/proxy (#3). Next: Phase 1 - profiles & skills models + signup/profile pages + admin approval.
 - 2026-07-29: Foundation/meta layer created. TDD + one-phase-at-a-time working agreement set.

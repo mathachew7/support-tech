@@ -1,4 +1,4 @@
-# support-tech - Project Working Agreement
+# support-tech - Project Working Agreement - JoslaLink
 
 Two-sided tech-mentorship marketplace.
 `docs/GOAL.md` = north star. `docs/project-spec.md` = full spec. `docs/PROGRESS.md` = what is done / next (read every session). `docs/DECISIONS.md` = why we chose things.

@@ -1,4 +1,4 @@
-// Phase 0: only what auth needs. Domain models (Skill, Booking, ...) arrive in later phases.
+// Phase 1: Foundation (Profiles & Skills). Booking/payments models arrive in later phases.
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +20,23 @@ enum UserStatus {
   suspended
 }
 
+enum Proficiency {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+enum DayOfWeek {
+  sun
+  mon
+  tue
+  wed
+  thu
+  fri
+  sat
+}
+
 model User {
   id           String     @id @default(cuid())
   email        String     @unique
@@ -27,5 +44,52 @@ model User {
   passwordHash String
   role         Role       @default(seeker)
   status       UserStatus @default(pending)
+  // Profile fields (optional; providers fill these in, seekers may too)
+  headline     String? // short tagline, e.g. "Senior SRE - Kubernetes & AWS"
+  bio          String?    @db.Text
+  location     String?
   createdAt    DateTime   @default(now())
+
+  providerSkills ProviderSkill[]
+  availability   Availability[]
+
+  @@index([role, status])
+}
+
+// Canonical skill catalog. Seeded, admin-curated. Providers attach to these.
+model Skill {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  category  String
+  createdAt DateTime @default(now())
+
+  providers ProviderSkill[]
+
+  @@index([category])
+}
+
+// A skill a provider offers, at a stated proficiency. Join with extra data.
+model ProviderSkill {
+  id          String      @id @default(cuid())
+  provider    User        @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerId  String
+  skill       Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId     String
+  proficiency Proficiency @default(intermediate)
+
+  @@unique([providerId, skillId])
+  @@index([skillId])
+}
+
+// A provider's recurring weekly availability window, stored as minutes-from-midnight.
+model Availability {
+  id         String    @id @default(cuid())
+  provider   User      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerId String
+  day        DayOfWeek
+  startMin   Int // 0..1439, minutes from midnight (e.g. 540 = 09:00)
+  endMin     Int // must be > startMin
+
+  @@index([providerId])
 }

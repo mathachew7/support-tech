@@ -1,0 +1,242 @@
+/* ============================================================
+   Shared auth layout (login + signup) — HubSpot-inspired,
+   always light. A single centered card on a soft tinted
+   backdrop. Self-contained palette; overrides the global
+   dark-mode form styles.
+   ============================================================ */
+.authRoot {
+  --ht-orange: #ff5c35;
+  --ht-orange-dark: #e5451f;
+  --ht-orange-weak: #fff1ec;
+  --ht-teal: #00bda5;
+  --ht-teal-dark: #009e8a;
+  --ht-ink: #1b2a4a;
+  --ht-heading: #213343;
+  --ht-body: #45566b;
+  --ht-muted: #7c98b6;
+  --ht-white: #ffffff;
+  --ht-border: #dfe3eb;
+
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 2.5rem 1.25rem;
+  background:
+    radial-gradient(46% 40% at 85% -5%, rgba(255, 92, 53, 0.13), transparent 60%),
+    radial-gradient(42% 42% at 8% 105%, rgba(0, 189, 165, 0.12), transparent 60%),
+    #f7f9fc;
+  color: var(--ht-body);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.authRoot * {
+  box-sizing: border-box;
+}
+
+.authCenter {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo + tagline above the card */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ht-heading);
+  font-size: 1.3rem;
+  text-decoration: none;
+}
+.brand:hover {
+  text-decoration: none;
+}
+.mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(140deg, var(--ht-orange), #ff8a63);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 900;
+  box-shadow: 0 6px 16px -5px rgba(255, 92, 53, 0.6);
+}
+.tagline {
+  margin-top: 0.7rem;
+  font-size: 0.92rem;
+  color: var(--ht-muted);
+  text-align: center;
+}
+
+/* The card */
+.card {
+  width: 100%;
+  margin-top: 1.6rem;
+  background: var(--ht-white);
+  border: 1px solid var(--ht-border);
+  border-radius: 18px;
+  padding: clamp(1.6rem, 4vw, 2.25rem);
+  box-shadow: 0 24px 60px -30px rgba(27, 42, 74, 0.4),
+    0 4px 12px -8px rgba(27, 42, 74, 0.15);
+}
+.formHead {
+  margin-bottom: 1.6rem;
+  text-align: center;
+}
+.title {
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  color: var(--ht-heading);
+  font-weight: 800;
+}
+.subtitle {
+  margin-top: 0.45rem;
+  color: var(--ht-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Notices */
+.notice {
+  border-radius: 10px;
+  padding: 0.75rem 0.95rem;
+  font-size: 0.92rem;
+  margin-bottom: 1.1rem;
+  border: 1px solid transparent;
+}
+.noticeSuccess {
+  color: #047857;
+  background: #ecfdf5;
+  border-color: rgba(4, 120, 87, 0.25);
+}
+.noticeError {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: rgba(185, 28, 28, 0.25);
+}
+
+/* Form fields */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.field label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ht-heading);
+  margin-bottom: 0.4rem;
+}
+.authRoot input,
+.authRoot select {
+  width: 100%;
+  font: inherit;
+  color: var(--ht-heading);
+  background: var(--ht-white);
+  border: 1.5px solid var(--ht-border);
+  border-radius: 9px;
+  padding: 0.65rem 0.8rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.authRoot input::placeholder {
+  color: var(--ht-muted);
+}
+.authRoot input:focus,
+.authRoot select:focus {
+  outline: none;
+  border-color: var(--ht-orange);
+  box-shadow: 0 0 0 3px var(--ht-orange-weak);
+}
+.hint {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--ht-muted);
+}
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fff;
+  background: var(--ht-orange);
+  border: none;
+  border-radius: 9px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.25rem;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.submit:hover:not(:disabled) {
+  background: var(--ht-orange-dark);
+}
+.submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.submit:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.altText {
+  margin-top: 1.4rem;
+  font-size: 0.92rem;
+  color: var(--ht-body);
+  text-align: center;
+}
+.altLink {
+  color: var(--ht-orange);
+  font-weight: 700;
+  text-decoration: none;
+}
+.altLink:hover {
+  text-decoration: underline;
+}
+
+/* Trust badges + back link below the card */
+.reassure {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin-top: 1.4rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--ht-muted);
+}
+.reassure span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.tick {
+  color: var(--ht-teal-dark);
+  font-weight: 900;
+}
+.foot {
+  margin-top: 1.6rem;
+}
+.footLink {
+  color: var(--ht-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.footLink:hover {
+  color: var(--ht-orange);
+  text-decoration: none;
+}

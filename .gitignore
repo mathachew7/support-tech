@@ -32,3 +32,6 @@ yarn-error.log*
 
 # codegraph index (regenerable)
 .codegraph/
+
+# typescript build info (regenerable)
+*.tsbuildinfo
