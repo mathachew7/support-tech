@@ -7,7 +7,7 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ---
 
 ## Current phase
-> **Phase 2 - Booking & Scheduling** (not started)
+> **Phase 2 - Booking & Scheduling** (in progress)
 
 ## Legend
 `[ ]` todo  `[~]` in progress  `[x]` done  `[!]` blocked/needs decision
@@ -49,12 +49,13 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 - Verified: `npm test` green (28), `npm run lint` clean, `npm run build` typechecks/compiles (17 routes), DB service layer smoke-tested end-to-end (register->pending, profile save, overlap rejected, approve->approved, double-approve rejected).
 - Rules under test (pure, /lib/services): `initialStatusFor` (provider->pending), `approveProviderTransition`, weekly availability validation (range/order/overlap).
 
-### Phase 2 - Booking & Scheduling  `[ ]`
-- [ ] Model: Booking
-- [ ] Seeker "request a session" with suggested providers (skill + availability overlap, server-side scoring)
+### Phase 2 - Booking & Scheduling  `[~]`
+- [x] Model: Booking (migration `phase2_booking`; `requested` status, nullable provider, 60-min default - DECISIONS.md #8)
+- [x] Seeker "request a session" with suggested providers (skill + availability overlap, server-side scoring)
 - [ ] Admin assign/reassign + confirm
 - [ ] Status lifecycle: scheduled -> completed/no_show/cancelled
 - [ ] Resend email on confirmation
+- Built vertical-slice (user preference): pure matcher `lib/services/matching.ts` (9 tests) -> Booking model -> seeker request page `/seekers/dashboard/request` + bookings list on dashboard. Verified end-to-end against seeded provider.
 
 ### Phase 3 - Payments & Subscriptions  `[ ]`
 - [ ] Models: SubscriptionPlan, Subscription, Payment
@@ -76,6 +77,7 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ---
 
 ## Session log (newest first)
+- 2026-07-29: **Phase 2 slice 1: seeker session requests.** JoslaLink rebrand + HubSpot-style landing/auth redesign shipped. Then Phase 2 started vertical-slice: pure provider matcher (skill + availability + approved, ranked by proficiency; 9 tests) -> `Booking` model/migration (`requested` status, nullable provider; DECISIONS #8) -> seeker "request a session" page with live suggestions + bookings list. 37 tests green, lint/typecheck clean. Seeded test accounts (admin/seeker/provider @joslalink.com, pw Josla@123). Next: admin assign/confirm slice -> status lifecycle -> Resend email.
 - 2026-07-29: **Phase 1 complete.** Profiles & skills built TDD. Pure rules in /lib/services (users, availability) + thin DB wrappers (providers, admin, seekers, signup). UI: signup/login/dashboard-router/forbidden, seeker + provider profile editors, admin user-list w/ approve. Skill catalog seeded via `tsx prisma/seed.ts`. Session now carries user id. Small design system in globals.css. Decisions #4-#7 logged. Next: Phase 2 - Booking model + session requests + admin assign + status lifecycle + Resend confirmation.
 - 2026-07-29: **Phase 0 complete.** Next.js 16 + Prisma + Auth.js scaffolded; role guard tested (TDD, 6 green); DB migration applied in Docker; build clean. Decided auth=Auth.js (#1), design=Frontend Design/Anthropic (#2), credentials+JWT/proxy (#3). Next: Phase 1 - profiles & skills models + signup/profile pages + admin approval.
 - 2026-07-29: Foundation/meta layer created. TDD + one-phase-at-a-time working agreement set.

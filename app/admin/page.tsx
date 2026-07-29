@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import DashboardHeader from "@/app/_components/DashboardHeader";
+import DashboardShell from "@/app/_components/DashboardShell";
 import { listUsers } from "@/lib/services/admin";
 import { approveProviderAction } from "./actions";
 
@@ -25,19 +25,21 @@ export default async function AdminPage() {
   ).length;
 
   return (
-    <main className="page">
-      <DashboardHeader name={session!.user!.name!} role="admin" />
-
+    <DashboardShell
+      user={{
+        name: session!.user!.name!,
+        email: session!.user!.email,
+        role: "admin",
+      }}
+      title="Users"
+    >
       <div className="stack" style={{ gap: "1.25rem" }}>
-        <div className="stack" style={{ gap: "0.35rem" }}>
-          <h1>Users</h1>
-          <p className="muted small">
-            {users.length} total.{" "}
-            {pendingProviders > 0
-              ? `${pendingProviders} provider${pendingProviders === 1 ? "" : "s"} awaiting approval.`
-              : "No providers awaiting approval."}
-          </p>
-        </div>
+        <p className="muted small">
+          {users.length} total.{" "}
+          {pendingProviders > 0
+            ? `${pendingProviders} provider${pendingProviders === 1 ? "" : "s"} awaiting approval.`
+            : "No providers awaiting approval."}
+        </p>
 
         <div className="table-wrap">
           <table>
@@ -89,6 +91,6 @@ export default async function AdminPage() {
           </table>
         </div>
       </div>
-    </main>
+    </DashboardShell>
   );
 }

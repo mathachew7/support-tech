@@ -6,6 +6,15 @@ Link from PROGRESS.md items with `(DECISIONS.md #N)`.
 
 ---
 
+## #8 - Booking model: `requested` status, optional provider, 60-min slots, server-local time
+**Decision:** `Booking` starts in a new `requested` status with `providerId` nullable; an admin later assigns a provider and confirms -> `scheduled` (then completed/no_show/cancelled).
+Sessions default to `durationMin = 60`.
+Matching reduces the booking's absolute `datetime` to a weekly (day-of-week + minute-of-day) slot using **server-local time** and checks it against provider `Availability` windows.
+**Why:** The spec enum lacks a pre-assignment state, but GOAL.md's admin-assisted matching needs one - the seeker requests, the admin matches. Availability is stored as recurring weekly windows with no timezone, so local-time reduction is the simplest correct thing at ~20-100 users. `onDelete: SetNull` on the provider FK keeps a request intact for reassignment if a provider account is removed.
+**Rules out (for now):** seeker picking their own provider; multi-timezone-correct scheduling; variable session lengths (single 60-min default). Revisit timezones when availability gains one.
+
+---
+
 ## #7 - Signup flow: account first, profile after, self-sign-in
 **Decision:** Signup creates the account only (name/email/password/role) and redirects to `/login`; providers complete skills + weekly availability afterward on an editable profile page in their dashboard. No auto sign-in.
 **Why:** Keeps each page focused and the profile editable anytime (vs a long onboarding wizard). Redirect-to-login avoids wiring `signIn` into the signup action. Both chosen by the user.

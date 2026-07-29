@@ -38,14 +38,16 @@ export async function registerUser(input: SignupInput): Promise<RegisterResult> 
   const valid = validateSignup(input);
   if (!valid.ok) return { ok: false, error: valid.error };
 
-  const existing = await prisma.user.findUnique({ where: { email: input.email } });
+  // Store email normalized so lookups (login) always match regardless of case.
+  const email = input.email.trim().toLowerCase();
+  const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return { ok: false, error: "An account with this email already exists" };
 
   const passwordHash = await bcrypt.hash(input.password, 10);
   const user = await prisma.user.create({
     data: {
       name: input.name.trim(),
-      email: input.email,
+      email,
       passwordHash,
       role: input.role,
       status: initialStatusFor(input.role),

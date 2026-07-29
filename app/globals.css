@@ -1,42 +1,25 @@
 :root {
-  --background: #f7f7f8;
+  /* JoslaLink palette - always light, matches the marketing + auth pages. */
+  --background: #f5f8fa;
   --surface: #ffffff;
-  --foreground: #1a1a1a;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #4f46e5;
+  --foreground: #213343;
+  --body: #45566b;
+  --muted: #7c98b6;
+  --border: #dfe3eb;
+  --accent: #ff5c35;
   --accent-fg: #ffffff;
-  --accent-weak: #eef2ff;
-  --success: #047857;
-  --success-weak: #ecfdf5;
+  --accent-weak: #fff1ec;
+  --accent-strong: #e5451f;
+  --success: #00a38d;
+  --success-weak: #e6f9f6;
   --warning: #b45309;
-  --warning-weak: #fffbeb;
-  --danger: #b91c1c;
+  --warning-weak: #fff7ed;
+  --danger: #d93f3f;
   --danger-weak: #fef2f2;
-  --radius: 10px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b0b0d;
-    --surface: #16161a;
-    --foreground: #ededed;
-    --muted: #9ca3af;
-    --border: #2a2a30;
-    --accent: #818cf8;
-    --accent-fg: #0b0b0d;
-    --accent-weak: #1e1b3a;
-    --success: #34d399;
-    --success-weak: #052e23;
-    --warning: #fbbf24;
-    --warning-weak: #2e2410;
-    --danger: #f87171;
-    --danger-weak: #2a1414;
-  }
-  html {
-    color-scheme: dark;
-  }
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(27, 42, 74, 0.04), 0 1px 3px rgba(27, 42, 74, 0.06);
+  --shadow-lift: 0 20px 44px -24px rgba(27, 42, 74, 0.35);
+  color-scheme: light;
 }
 
 html {
@@ -171,6 +154,7 @@ textarea {
   color: var(--foreground);
   border-radius: 8px;
   padding: 0.55rem 0.9rem;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .btn:hover {
   border-color: var(--muted);
@@ -182,7 +166,8 @@ textarea {
   border-color: var(--accent);
 }
 .btn--primary:hover {
-  filter: brightness(1.05);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
 }
 .btn--small {
   padding: 0.35rem 0.7rem;

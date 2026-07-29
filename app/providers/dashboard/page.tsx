@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth/auth";
-import DashboardHeader from "@/app/_components/DashboardHeader";
+import DashboardShell from "@/app/_components/DashboardShell";
 import { getSkillCatalog, getProviderProfile } from "@/lib/services/providers";
 import ProviderProfileForm from "./profile-form";
 
@@ -51,16 +51,18 @@ export default async function ProviderDashboard() {
   }));
 
   return (
-    <main className="page">
-      <DashboardHeader name={session!.user!.name!} role="provider" />
-
+    <DashboardShell
+      user={{
+        name: session!.user!.name!,
+        email: session!.user!.email,
+        role: "provider",
+      }}
+      title="Your provider profile"
+    >
       <div className="stack" style={{ gap: "1.25rem" }}>
-        <div className="stack" style={{ gap: "0.35rem" }}>
-          <h1>Your provider profile</h1>
-          <p className="muted small">
-            List the skills you teach and when you are available.
-          </p>
-        </div>
+        <p className="muted small">
+          List the skills you teach and when you are available.
+        </p>
 
         <StatusBanner status={profile?.status ?? "pending"} />
 
@@ -77,6 +79,6 @@ export default async function ProviderDashboard() {
           />
         </div>
       </div>
-    </main>
+    </DashboardShell>
   );
 }

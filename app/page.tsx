@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth } from "@/lib/auth/auth";
 import { getSkillCatalog } from "@/lib/services/providers";
 import styles from "./page.module.css";
 
@@ -20,7 +21,8 @@ function categoryVisual(category: string): { icon: string; tint: string } {
 }
 
 export default async function Home() {
-  const catalog = await getSkillCatalog();
+  const [catalog, session] = await Promise.all([getSkillCatalog(), auth()]);
+  const loggedIn = !!session?.user;
 
   // Group the live catalog by category for the skills section.
   const byCategory = new Map<string, string[]>();
@@ -48,12 +50,20 @@ export default async function Home() {
             <a href="#skills" className={styles.navLink}>Skills</a>
           </div>
           <div className={styles.navRight}>
-            <Link href="/login" className={styles.navSignin}>
-              Sign in
-            </Link>
-            <Link href="/signup" className={styles.btnPrimary}>
-              Get started free
-            </Link>
+            {loggedIn ? (
+              <Link href="/dashboard" className={styles.btnPrimary}>
+                Go to dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className={styles.navSignin}>
+                  Sign in
+                </Link>
+                <Link href="/signup" className={styles.btnPrimary}>
+                  Get started free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -311,12 +321,20 @@ export default async function Home() {
             exact problem before. First match in days, not weeks.
           </p>
           <div className={styles.ctaBandBtns}>
-            <Link href="/signup" className={`${styles.btnWhite} ${styles.btnLg}`}>
-              Get started free
-            </Link>
-            <Link href="/login" className={`${styles.btnGhost} ${styles.btnLg}`}>
-              Sign in
-            </Link>
+            {loggedIn ? (
+              <Link href="/dashboard" className={`${styles.btnWhite} ${styles.btnLg}`}>
+                Go to your dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/signup" className={`${styles.btnWhite} ${styles.btnLg}`}>
+                  Get started free
+                </Link>
+                <Link href="/login" className={`${styles.btnGhost} ${styles.btnLg}`}>
+                  Sign in
+                </Link>
+              </>
+            )}
           </div>
           <div className={styles.ctaReassure}>
             <span>✓ Human-reviewed mentors</span>

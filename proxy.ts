@@ -10,6 +10,14 @@ export default auth((req) => {
   const role = req.auth?.user?.role ?? null;
   const { pathname } = req.nextUrl;
 
+  // Already signed in? Keep them out of the auth pages - send to their dashboard.
+  if (role && (pathname === "/login" || pathname === "/signup")) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   if (!canAccess(role, pathname)) {
     const url = req.nextUrl.clone();
     if (!role) {
@@ -27,6 +35,8 @@ export default auth((req) => {
 // Only run the guard on role-gated areas; everything else is public for now.
 export const config = {
   matcher: [
+    "/login",
+    "/signup",
     "/admin/:path*",
     "/providers/dashboard/:path*",
     "/seekers/dashboard/:path*",
