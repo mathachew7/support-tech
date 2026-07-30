@@ -41,6 +41,9 @@ export const Icons = {
   bolt: (
     <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></svg>
   ),
+  gear: (
+    <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+  ),
 };
 
 const SEEKER: NavSection[] = [
@@ -67,12 +70,18 @@ const PROVIDER: NavSection[] = [
     title: "Menu",
     items: [
       { href: "/providers/dashboard", label: "Overview", icon: Icons.grid },
-      { href: "#", label: "Sessions", icon: Icons.calendar, soon: true },
+      { href: "/providers/dashboard/sessions", label: "Sessions", icon: Icons.calendar },
+      { href: "/providers/dashboard/history", label: "History", icon: Icons.clock },
+      { href: "/providers/dashboard/seekers", label: "My seekers", icon: Icons.users },
     ],
   },
   {
     title: "Account",
-    items: [{ href: "#", label: "Payouts", icon: Icons.card, soon: true }],
+    items: [
+      { href: "/providers/dashboard/account", label: "Account", icon: Icons.user },
+      { href: "/providers/dashboard/settings", label: "Settings", icon: Icons.gear },
+      { href: "#", label: "Payouts", icon: Icons.card, soon: true },
+    ],
   },
 ];
 

@@ -83,6 +83,9 @@ model User {
   github       String? // GitHub profile URL
   website      String? // personal site / portfolio URL
   skills       String[]   @default([]) // seeker: skills/interests; free-form
+  // Contact (so an assigned provider can reach the seeker off-platform)
+  phone        String?
+  whatsapp     String?
   // Billing address (used on invoices)
   street       String?
   city         String?
@@ -145,14 +148,19 @@ model Availability {
 // A seeker's session request, and (once an admin assigns) the scheduled session.
 model Booking {
   id          String        @id @default(cuid())
+  reference   String?       @unique // human session id, e.g. "SES-7F3K2M"
   seeker      User          @relation("SeekerBookings", fields: [seekerId], references: [id], onDelete: Cascade)
   seekerId    String
   // Null until an admin assigns a provider; SetNull so removing a provider
   // account leaves the request intact for reassignment.
   provider    User?         @relation("ProviderBookings", fields: [providerId], references: [id], onDelete: SetNull)
   providerId  String?
-  skill       Skill         @relation(fields: [skillId], references: [id])
-  skillId     String
+  // A session belongs to the seeker's request (the "package"). An optional
+  // focus skill can still be noted per session.
+  request     SessionRequest? @relation(fields: [requestId], references: [id])
+  requestId   String?
+  skill       Skill?        @relation(fields: [skillId], references: [id])
+  skillId     String?
   datetime    DateTime // absolute start time of the requested session
   durationMin Int           @default(60)
   note        String?       @db.Text
@@ -185,6 +193,7 @@ model SessionRequest {
   createdAt        DateTime             @default(now())
   times            SessionRequestTime[]
   invoices         Invoice[]
+  bookings         Booking[]
 
   @@index([seekerId])
   @@index([status])

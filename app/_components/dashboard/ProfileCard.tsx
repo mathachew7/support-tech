@@ -15,6 +15,8 @@ export type ProfileCardData = {
   github?: string | null;
   website?: string | null;
   skills?: string[];
+  phone?: string | null;
+  whatsapp?: string | null;
   street?: string | null;
   city?: string | null;
   state?: string | null;
@@ -55,7 +57,15 @@ function Detail({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-export function ProfileCard({ p, onEdit }: { p: ProfileCardData; onEdit?: () => void }) {
+export function ProfileCard({
+  p,
+  onEdit,
+  hideAddress = false,
+}: {
+  p: ProfileCardData;
+  onEdit?: () => void;
+  hideAddress?: boolean;
+}) {
   const joined = p.createdAt
     ? p.createdAt.toLocaleDateString(undefined, { month: "long", year: "numeric" })
     : null;
@@ -125,12 +135,31 @@ export function ProfileCard({ p, onEdit }: { p: ProfileCardData; onEdit?: () => 
           <Detail label="Position" value={p.position} />
           <Detail label="Location" value={p.location} />
           <Detail label="Email" value={p.email} />
+          <Detail label="Phone" value={p.phone} />
           <div className={styles.detail}>
-            <span className={styles.dk}>Billing address</span>
-            <span className={styles.dv}>
-              {address.length ? address.join(", ") : "-"}
-            </span>
+            <span className={styles.dk}>WhatsApp</span>
+            {p.whatsapp ? (
+              <a
+                className={styles.dv}
+                href={`https://wa.me/${p.whatsapp.replace(/[^0-9]/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: "var(--accent)" }}
+              >
+                {p.whatsapp}
+              </a>
+            ) : (
+              <span className={styles.dv}>-</span>
+            )}
           </div>
+          {!hideAddress && (
+            <div className={styles.detail}>
+              <span className={styles.dk}>Billing address</span>
+              <span className={styles.dv}>
+                {address.length ? address.join(", ") : "-"}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

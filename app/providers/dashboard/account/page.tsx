@@ -1,26 +1,26 @@
 import { auth } from "@/lib/auth/auth";
 import DashboardShell from "@/app/_components/DashboardShell";
-import { getSeekerProfile } from "@/lib/services/seekers";
-import { getSkillCatalog } from "@/lib/services/providers";
-import { AccountProfile } from "./AccountProfile";
+import { getProviderProfile } from "@/lib/services/providers";
+import { ProviderAccount } from "./ProviderAccount";
 
-export default async function SeekerAccountPage() {
+function initials(name: string): string {
+  const p = name.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "?";
+}
+
+export default async function ProviderAccountPage() {
   const session = await auth();
-  const seekerId = session!.user!.id!;
-  const [profile, catalog] = await Promise.all([
-    getSeekerProfile(seekerId),
-    getSkillCatalog(),
-  ]);
+  const profile = await getProviderProfile(session!.user!.id!);
 
   const name = profile?.name ?? session!.user!.name!;
-  const skills = profile?.skills ?? [];
+  const skillNames = (profile?.providerSkills ?? []).map((ps) => ps.skill.name);
 
   return (
     <DashboardShell
-      user={{ name, email: session!.user!.email, role: "seeker" }}
+      user={{ name, email: session!.user!.email, role: "provider" }}
       title="Account"
     >
-      <AccountProfile
+      <ProviderAccount
         card={{
           name,
           email: profile?.email ?? session!.user!.email,
@@ -34,7 +34,7 @@ export default async function SeekerAccountPage() {
           linkedin: profile?.linkedin,
           github: profile?.github,
           website: profile?.website,
-          skills,
+          skills: skillNames,
           phone: profile?.phone,
           whatsapp: profile?.whatsapp,
           street: profile?.street,
@@ -43,7 +43,7 @@ export default async function SeekerAccountPage() {
           zip: profile?.zip,
           country: profile?.country,
         }}
-        editable={{
+        values={{
           headline: profile?.headline ?? "",
           bio: profile?.bio ?? "",
           location: profile?.location ?? "",
@@ -53,7 +53,6 @@ export default async function SeekerAccountPage() {
           linkedin: profile?.linkedin ?? "",
           github: profile?.github ?? "",
           website: profile?.website ?? "",
-          skills,
           phone: profile?.phone ?? "",
           whatsapp: profile?.whatsapp ?? "",
           street: profile?.street ?? "",
@@ -62,7 +61,7 @@ export default async function SeekerAccountPage() {
           zip: profile?.zip ?? "",
           country: profile?.country ?? "",
         }}
-        skillOptions={catalog.map((s) => s.name)}
+        fallbackInitials={initials(name)}
       />
     </DashboardShell>
   );

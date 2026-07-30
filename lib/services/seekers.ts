@@ -13,6 +13,8 @@ export type SeekerProfileInput = {
   github?: string | null;
   website?: string | null;
   skills?: string[];
+  phone?: string | null;
+  whatsapp?: string | null;
   street?: string | null;
   city?: string | null;
   state?: string | null;
@@ -38,6 +40,8 @@ export function getSeekerProfile(seekerId: string) {
       github: true,
       website: true,
       skills: true,
+      phone: true,
+      whatsapp: true,
       street: true,
       city: true,
       state: true,
@@ -71,6 +75,8 @@ export async function saveSeekerProfile(seekerId: string, input: SeekerProfileIn
       github: normalizeUrl(input.github),
       website: normalizeUrl(input.website),
       skills: (input.skills ?? []).map((s) => s.trim()).filter(Boolean).slice(0, 30),
+      phone: clean(input.phone),
+      whatsapp: clean(input.whatsapp),
       street: clean(input.street),
       city: clean(input.city),
       state: clean(input.state),

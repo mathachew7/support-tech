@@ -26,6 +26,8 @@ export async function saveSeekerProfileAction(
     github: String(formData.get("github") ?? ""),
     website: String(formData.get("website") ?? ""),
     skills: formData.getAll("skills").map((v) => String(v)).filter(Boolean),
+    phone: String(formData.get("phone") ?? ""),
+    whatsapp: String(formData.get("whatsapp") ?? ""),
     street: String(formData.get("street") ?? ""),
     city: String(formData.get("city") ?? ""),
     state: String(formData.get("state") ?? ""),

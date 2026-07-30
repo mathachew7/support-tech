@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { saveSeekerProfileAction } from "../actions";
-import { MultiCombobox } from "@/app/_components/ui/MultiCombobox";
+import { saveProviderPersonalAction } from "../actions";
 import { AvatarUploader } from "@/app/_components/ui/AvatarUploader";
-import styles from "./account.module.css";
+import styles from "@/app/seekers/dashboard/account/account.module.css";
 
-export type EditableProfile = {
+export type ProviderPersonal = {
   headline: string;
   bio: string;
   location: string;
@@ -16,7 +15,6 @@ export type EditableProfile = {
   linkedin: string;
   github: string;
   website: string;
-  skills: string[];
   phone: string;
   whatsapp: string;
   street: string;
@@ -26,21 +24,18 @@ export type EditableProfile = {
   country: string;
 };
 
-export function ProfileEditForm({
+export function ProviderPersonalForm({
   values,
-  skillOptions,
   fallbackInitials,
   onCancel,
   onSaved,
 }: {
-  values: EditableProfile;
-  skillOptions: string[];
+  values: ProviderPersonal;
   fallbackInitials: string;
   onCancel: () => void;
   onSaved: () => void;
 }) {
   const [avatar, setAvatar] = useState(values.avatarUrl);
-  const [skills, setSkills] = useState(values.skills);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
@@ -48,8 +43,7 @@ export function ProfileEditForm({
     e.preventDefault();
     setPending(true);
     setError("");
-    const fd = new FormData(e.currentTarget);
-    const res = await saveSeekerProfileAction({}, fd);
+    const res = await saveProviderPersonalAction({}, new FormData(e.currentTarget));
     if (res?.error) {
       setError(res.error);
       setPending(false);
@@ -71,7 +65,7 @@ export function ProfileEditForm({
       <div className={styles.grid}>
         <div className="field">
           <label htmlFor="position">Current position</label>
-          <input id="position" name="position" defaultValue={values.position} placeholder="e.g. Backend Engineer" />
+          <input id="position" name="position" defaultValue={values.position} placeholder="e.g. Senior SRE" />
         </div>
         <div className="field">
           <label htmlFor="company">Company</label>
@@ -81,12 +75,12 @@ export function ProfileEditForm({
 
       <div className="field">
         <label htmlFor="headline">Headline</label>
-        <input id="headline" name="headline" defaultValue={values.headline} placeholder="e.g. Backend dev learning Kubernetes" />
+        <input id="headline" name="headline" defaultValue={values.headline} placeholder="e.g. Senior SRE - Kubernetes & AWS" />
       </div>
 
       <div className="field">
         <label htmlFor="location">Location</label>
-        <input id="location" name="location" defaultValue={values.location} placeholder="e.g. Berlin (CET)" />
+        <input id="location" name="location" defaultValue={values.location} placeholder="e.g. Lisbon (WET)" />
       </div>
 
       <div className={styles.grid}>
@@ -107,7 +101,7 @@ export function ProfileEditForm({
 
       <div className="field">
         <label htmlFor="bio">About</label>
-        <textarea id="bio" name="bio" defaultValue={values.bio} placeholder="What are you trying to learn, and why?" />
+        <textarea id="bio" name="bio" defaultValue={values.bio} placeholder="Your background and how you help people learn." />
       </div>
 
       <div className={styles.grid}>
@@ -144,11 +138,6 @@ export function ProfileEditForm({
           <label htmlFor="country">Country</label>
           <input id="country" name="country" defaultValue={values.country} placeholder="Country" />
         </div>
-      </div>
-
-      <div className="field">
-        <label>Skills &amp; interests</label>
-        <MultiCombobox name="skills" values={skills} onChange={setSkills} options={skillOptions} placeholder="Add skills you want to grow" />
       </div>
 
       <div className={styles.editActions}>
