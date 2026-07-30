@@ -52,8 +52,8 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ### Phase 2 - Booking & Scheduling  `[~]`
 - [x] Model: Booking (migration `phase2_booking`; `requested` status, nullable provider, 60-min default - DECISIONS.md #8)
 - [x] Seeker "request a session" with suggested providers (skill + availability overlap, server-side scoring)
-- [ ] Admin assign/reassign + confirm
-- [ ] Status lifecycle: scheduled -> completed/no_show/cancelled
+- [x] Admin assign + confirm (admin matches a request to a provider -> creates a scheduled Booking, marks request `matched`; searchable/auto-match provider picker)
+- [ ] Status lifecycle: scheduled -> completed/no_show/cancelled (provider/admin marks outcome)
 - [ ] Resend email on confirmation
 - Built vertical-slice (user preference): pure matcher `lib/services/matching.ts` (9 tests) -> Booking model -> seeker request page `/seekers/dashboard/request` + bookings list on dashboard. Verified end-to-end against seeded provider.
 
@@ -77,6 +77,7 @@ Keep it terse - it exists to save re-scanning the whole codebase.
 ---
 
 ## Session log (newest first)
+- 2026-07-29: **Admin dashboard + assign flow.** Admin Overview (work-queue stats + requests-to-match), Requests queue (searchable), request detail (skills/plan/window/preferred-times + link to seeker profile), gated Assign section (manual multi-term provider search + optional Auto-match-by-skill, calendar+time pickers) -> creates scheduled Booking + marks request matched. Admin user profile page. Provider side earlier: full dashboard, package-linked sessions w/ SES refs + detail, seeker contact/CRM card (phone/WhatsApp), searchable/free-add skills, multi-window availability. 62 tests green.
 - 2026-07-29: **Payments (invoices) - Phase 3 pulled forward.** `Invoice` model (cents, statuses pending/paid/void, sequential numbers); admin issue + mark-paid at `/admin/invoices`; seeker view at `/seekers/dashboard/payments` (un-gated nav). Pure rules `invoices-core.ts` (10 tests). No Stripe yet (DECISIONS #11). Also: Account redesigned into a real profile (photo upload, links, edit toggle); session detail pages with `reference` codes. 62 tests green.
 - 2026-07-29: **Seeker dashboard + richer request flow.** Master `DashboardShell` (role-aware sectioned sidebar, profile menu, mobile drawer) + orange always-light app palette; homepage shows "Go to dashboard" when signed in; proxy blocks /login+/signup when authed; email normalized lowercase on signup+login. Seeker area modularized into Overview/Sessions/History/Account (+ shared StatCard/StatusBadge/SessionsTable/RequestsTable). Reworked request into `SessionRequest` (one request, many preferred times, free-text+catalog skill, 1/3/5-mo commitment, timezone; pure rules `requests-core.ts` 10 tests; DECISIONS #9). 47 tests green.
 - 2026-07-29: **Phase 2 slice 1: seeker session requests.** JoslaLink rebrand + HubSpot-style landing/auth redesign shipped. Then Phase 2 started vertical-slice: pure provider matcher (skill + availability + approved, ranked by proficiency; 9 tests) -> `Booking` model/migration (`requested` status, nullable provider; DECISIONS #8) -> seeker "request a session" page with live suggestions + bookings list. 37 tests green, lint/typecheck clean. Seeded test accounts (admin/seeker/provider @joslalink.com, pw Josla@123). Next: admin assign/confirm slice -> status lifecycle -> Resend email.

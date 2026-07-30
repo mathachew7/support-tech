@@ -89,9 +89,10 @@ const ADMIN: NavSection[] = [
   {
     title: "Menu",
     items: [
-      { href: "/admin", label: "Users", icon: Icons.users },
+      { href: "/admin", label: "Overview", icon: Icons.grid },
+      { href: "/admin/requests", label: "Requests", icon: Icons.calendarPlus },
+      { href: "/admin/users", label: "Users", icon: Icons.users },
       { href: "/admin/invoices", label: "Invoices", icon: Icons.card },
-      { href: "#", label: "Bookings", icon: Icons.calendar, soon: true },
     ],
   },
 ];
